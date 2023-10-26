@@ -37,12 +37,13 @@ namespace Scenes._1027
             };
 
             // しっかり例外が発生する。
+            // 例外出ないように対応
             Dictionary<string, object> newUserInfo2 = new Dictionary<string, object>()
             {
                 {"UserID", userInfoWithoutSkills.ID},
                 {"UserLevel", userInfoWithoutSkills.Level},
-                {"UserSkillID", userInfoWithoutSkills.UserSkills.ID},
-                {"UserSkillName", userInfoWithoutSkills.UserSkills.Name},
+                {"UserSkillID", userInfoWithoutSkills.UserSkills?.ID},
+                {"UserSkillName", userInfoWithoutSkills.UserSkills?.Name},
             };
         }
     }
