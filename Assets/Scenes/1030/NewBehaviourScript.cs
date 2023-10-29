@@ -9,6 +9,10 @@ namespace Scenes._1030
             // Userクラスのインスタンスを作成
             var newUser = new User("testuser", "Skill One");
             newUser.ShowUserInfo();
+            
+            // Skillクラスのインスタンスを作成
+            var newSkill = new Skill("Skill Two");
+            newSkill.ShowSkill();
         }
     }
     
