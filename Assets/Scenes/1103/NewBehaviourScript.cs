@@ -7,28 +7,25 @@ namespace Scenes._1103
         void Start()
         {
             // クラスのインスタンスを作成
-            SampleClass sample = new SampleClass();
+            SampleClass sample = new SampleClass
+            {
+                // 値型のフィールドにアクセス
+                IntegerField = 10,
+                DoubleField = 3.14,
+                BooleanField = true,
+                CharField = 'A',
+                // 列挙型フィールドにアクセス
+                Color = SampleClass.EnumField.Red,
+                // 参照型のフィールドにアクセス
+                StringField = "Hello, World!",
+                ReferenceField = new SampleClass { IntegerField = 20 },
+                // 構造体フィールドにアクセス
+                Point = new SampleClass.StructField { X = 5, Y = 7 },
+                // 配列型のフィールドにアクセス
+                IntegerArray = new[] { 1, 2, 3, 4, 5 },
+                StringArray = new[] { "Hello", "World" }
+            };
 
-            // 値型のフィールドにアクセス
-            sample.IntegerField = 10;
-            sample.DoubleField = 3.14;
-            sample.BooleanField = true;
-            sample.CharField = 'A';
-
-            // 列挙型フィールドにアクセス
-            sample.Color = SampleClass.EnumField.Red;
-
-            // 参照型のフィールドにアクセス
-            sample.StringField = "Hello, World!";
-            sample.ReferenceField = new SampleClass { IntegerField = 20 };
-
-            // 構造体フィールドにアクセス
-            sample.Point = new SampleClass.StructField { X = 5, Y = 7 };
-
-            // 配列型のフィールドにアクセス
-            sample.IntegerArray = new int[] { 1, 2, 3, 4, 5 };
-            sample.StringArray = new string[] { "Hello", "World" };
-            
             Debug.Log(sample);
         }
     }
