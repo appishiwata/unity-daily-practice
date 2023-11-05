@@ -1,3 +1,5 @@
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Scenes._1106
@@ -6,7 +8,9 @@ namespace Scenes._1106
     {
         void Start()
         {
-        
+            var userList = AssetDatabase.LoadAssetAtPath<UserList>("Assets/Scenes/1106/UserList.asset");
+            var user = userList.GetUserById(2);
+            Debug.Log($"User Name: {user.name}, User Age: {user.age}");
         }
         
         // ユーザーデータを持つクラス
@@ -23,6 +27,11 @@ namespace Scenes._1106
         public class UserList : ScriptableObject
         {
             public User[] users;
+            
+            public User GetUserById(int id)
+            {
+                return users.FirstOrDefault(user => user.id == id);
+            }
         }
     }
 }
