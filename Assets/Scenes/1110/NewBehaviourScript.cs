@@ -7,14 +7,20 @@ namespace Scenes._1110
     {
         async void Start()
         {
-            await WaitForTwoSecondsAsync();
+            var task = WaitForTwoSecondsAsync();
             
             Debug.Log("Start");
+            
+            await task;
+            
+            Debug.Log("End");
         }
 
         private async Task WaitForTwoSecondsAsync()
         {
+            Debug.Log("WaitForTwoSecondsAsync Start");
             await Task.Delay(2000);
+            Debug.Log("WaitForTwoSecondsAsync End");
         }
     }
 }
