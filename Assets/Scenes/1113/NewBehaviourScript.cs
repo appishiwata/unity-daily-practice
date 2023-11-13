@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,8 +11,13 @@ namespace Scenes._1113
         async void Start()
         {
             var userList = await GetUserListFromHttp();
-            Debug.Log(userList.users[0].id);
-            Debug.Log(userList.users[0].title);
+            userList.users
+                .Take(5)
+                .ToList()
+                .ForEach(user =>
+                {
+                    Debug.Log(user.id + " " + user.title);
+                });
         }
         
         private static async Task<UserList> GetUserListFromHttp()
