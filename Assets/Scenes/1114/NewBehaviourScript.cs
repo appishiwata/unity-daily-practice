@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Scenes._1114
@@ -19,6 +20,24 @@ namespace Scenes._1114
             finally
             {
                 Debug.Log("Finally");
+            }
+            
+            // テキストファイルを取得する
+            var content = GetFileText("Assets/Scenes/1114/TextFile.txt");
+            Debug.Log(content);
+        }
+        
+        private string GetFileText(string filePath)
+        {
+            try 
+            {
+                string content = File.ReadAllText(filePath);
+                return content;
+            }
+            catch(IOException ex) 
+            {
+                Debug.Log($"An error occurred: {ex.Message}");
+                return null;
             }
         }
     }
