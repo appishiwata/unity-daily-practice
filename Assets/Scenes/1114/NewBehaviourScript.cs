@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Scenes._1114
@@ -6,7 +7,19 @@ namespace Scenes._1114
     {
         void Start()
         {
-        
+            try
+            {
+                Debug.Log("Start");
+                throw new Exception("An intentional exception has occurred.");
+            }
+            catch (Exception ex)
+            {
+                Debug.Log($"Caught an error: {ex.Message}");
+            }
+            finally
+            {
+                Debug.Log("Finally");
+            }
         }
     }
 }
