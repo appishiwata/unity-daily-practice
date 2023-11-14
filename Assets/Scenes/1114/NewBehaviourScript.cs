@@ -25,6 +25,14 @@ namespace Scenes._1114
             // テキストファイルを取得する
             var content = GetFileText("Assets/Scenes/1114/TextFile.txt");
             Debug.Log(content);
+
+            // パスをあえて間違えてエラーを発生させる
+            content = GetFileText("Assets/Scenes/1114/TextFile.txtA");
+            Debug.Log(content);
+            
+            // try catchで囲わずにエラーを発生させる 例外扱いになる
+            content = File.ReadAllText("Assets/Scenes/1114/TextFile.txtA");
+            Debug.Log(content);
         }
         
         private string GetFileText(string filePath)
