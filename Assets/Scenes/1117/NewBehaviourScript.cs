@@ -29,6 +29,15 @@ namespace Scenes._1117
             };
             await _image.transform.DOPath(path1, 1, PathType.CatmullRom);
             await _image.transform.DOMove(startPoint, 0);
+            
+            // 2地点指定の曲線移動
+            Vector3[] path2 = new Vector3[] {
+                startPoint,
+                (startPoint + endPoint) / 2 + new Vector3(-100f, 100, 0),
+                endPoint
+            };
+            await _image.transform.DOPath(path2, 1, PathType.CatmullRom);
+            await _image.transform.DOMove(startPoint, 0);
         }
     }
 }
