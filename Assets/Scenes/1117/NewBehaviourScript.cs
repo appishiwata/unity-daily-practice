@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,15 +10,25 @@ namespace Scenes._1117
         [SerializeField] Image _image;
         [SerializeField] Image _target;
         [SerializeField] Image _middle;
-        
-        void Start()
+
+        async void Start()
         {
             var startPoint = _image.transform.position;
             var middlePoint = _middle.transform.position;
             var endPoint = _target.transform.position;
             
             // 通常の移動
-            _image.transform.DOMove(endPoint, 2);
+            await _image.transform.DOMove(endPoint, 2);
+            await _image.transform.DOMove(startPoint, 0);
+
+            // 3地点指定の曲線移動
+            Vector3[] path1 = new Vector3[] {
+                startPoint,
+                middlePoint,
+                endPoint
+            };
+            await _image.transform.DOPath(path1, 1, PathType.CatmullRom);
+            await _image.transform.DOMove(startPoint, 0);
         }
     }
 }
