@@ -22,6 +22,12 @@ namespace Scenes._1121
             {
                 Debug.Log("Button was clicked!");
             });
+            
+            // UniRxでの書き方
+            _exampleButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                Debug.Log("Button was clicked! (UniRx)");
+            });
         }
     }
 }
