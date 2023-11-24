@@ -1,10 +1,13 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Scenes._1125
 {
     public class NewBehaviourScript : MonoBehaviour
     {
-        void Start()
+        [SerializeField] GameObject _cube;
+
+        async void Start()
         {
             // メッセージを表示
             Debug.Log("Player has entered the trigger zone.");
@@ -28,6 +31,24 @@ namespace Scenes._1125
             
             // サイズ変更
             Debug.Log("<size=20>Large Text</size> and normal text");
+            
+            // 3秒待機
+            await UniTask.Delay(3000);
+            
+            // Editor一時停止
+            Debug.Break();
+            
+            // 第二引数にオブジェクトを指定すると、そのオブジェクトの位置が表示される
+            Debug.Log("cubeです", _cube);
+            
+            // Debug.LogFormatを使って変数を埋め込む
+            Debug.LogFormat("Player's health: {0}", playerHealth);
+            
+            // 複数の変数に対応 3つ
+            var playerName = "Player1";
+            var playerLevel = 10;
+            var playerScore = 1000;
+            Debug.LogFormat("Player's name: {0}, level: {1}, score: {2}", playerName, playerLevel, playerScore);
         }
     }
 }
