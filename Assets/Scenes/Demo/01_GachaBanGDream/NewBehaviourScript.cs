@@ -1,19 +1,20 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace Scenes.Demo._01_GachaBanGDream
 {
     public class NewBehaviourScript : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        [SerializeField] CanvasGroup _cutinGroup;
         
+        async void Start()
+        {
+            PlayAnimation();
         }
 
-        // Update is called once per frame
-        void Update()
+        void PlayAnimation()
         {
-        
+            _cutinGroup.DOFade(1, 0f).SetDelay(1f);
         }
     }
 }
