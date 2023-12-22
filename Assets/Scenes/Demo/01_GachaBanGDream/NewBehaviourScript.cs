@@ -1,5 +1,5 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,17 +9,16 @@ namespace Scenes.Demo._01_GachaBanGDream
     {
         [SerializeField] CanvasGroup _cutinGroup;
         [SerializeField] CanvasGroup _textGroup;
+        [SerializeField] CanvasGroup _newImage;
 
         [SerializeField] GameObject _characterObject;
         [SerializeField] Image _characterImage;
         [SerializeField] Image _characterImageHighlight;
-
         [SerializeField] Image[] _starImages;
-
-        [SerializeField] CanvasGroup _newImage;
 
         async void Start()
         {
+            await UniTask.Delay(6000);
             PlayAnimation();
         }
 
