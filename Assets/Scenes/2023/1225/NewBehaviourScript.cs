@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -29,6 +30,12 @@ namespace Scenes._2023._1225
             
             // サイズを変更
             _text.fontSize = 30;
+            
+            // Dotweenを使ってアニメーションを追加
+            _text.transform.DOScale(1.5f, 1f).SetEase(Ease.OutBack);
+            
+            // Dotweenを使ってアニメーションを追加
+            _text.transform.DORotate(new Vector3(0, 0, 360), 1f, RotateMode.FastBeyond360).SetEase(Ease.Linear);
         }
 
         // Update is called once per frame
