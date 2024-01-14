@@ -14,16 +14,21 @@ namespace Scenes.Template._01_OneSceneGame
         [SerializeField] Button _startButton;
         [SerializeField] Button _backButton;
         
+        [Header("Sound")]
+        [SerializeField] AudioSource _buttonSound;
+        
         void Start()
         {
             _startButton.OnClickAsObservable().Subscribe(_ =>
             {
+                _buttonSound.Play();
                 _titlePanel.SetActive(false);
                 _gamePanel.SetActive(true);
             });
             
             _backButton.OnClickAsObservable().Subscribe(_ =>
             {
+                _buttonSound.Play();
                 _titlePanel.SetActive(true);
                 _gamePanel.SetActive(false);
             });
