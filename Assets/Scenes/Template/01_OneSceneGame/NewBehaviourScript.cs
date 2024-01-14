@@ -1,18 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class NewBehaviourScript : MonoBehaviour
+namespace Scenes.Template._01_OneSceneGame
 {
-    // Start is called before the first frame update
-    void Start()
+    public class NewBehaviourScript : MonoBehaviour
     {
-        
-    }
+        [Header("Panel")]
+        [SerializeField] GameObject _titlePanel;
+        [SerializeField] GameObject _gamePanel;
 
-    // Update is called once per frame
-    void Update()
-    {
+        [Header("Button")]
+        [SerializeField] Button _startButton;
+        [SerializeField] Button _backButton;
         
+        void Start()
+        {
+            _startButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                _titlePanel.SetActive(false);
+                _gamePanel.SetActive(true);
+            });
+            
+            _backButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                _titlePanel.SetActive(true);
+                _gamePanel.SetActive(false);
+            });
+        }
     }
 }
