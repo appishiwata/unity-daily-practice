@@ -16,9 +16,12 @@ namespace Scenes.Template._01_OneSceneGame
         
         [Header("Sound")]
         [SerializeField] AudioSource _buttonSound;
+        [SerializeField] AudioSource _bgmSound;
         
         void Start()
         {
+            _bgmSound.Play();
+            
             _startButton.OnClickAsObservable().Subscribe(_ =>
             {
                 _buttonSound.Play();
