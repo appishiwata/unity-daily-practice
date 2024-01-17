@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,9 @@ namespace Scenes.Template._01_OneSceneGame
         [Header("Panel")]
         [SerializeField] GameObject _titlePanel;
         [SerializeField] GameObject _gamePanel;
+        
+        [Header("CanvasGroup")]
+        [SerializeField] Image _fade;
 
         [Header("Button")]
         [SerializeField] Button _startButton;
@@ -26,16 +30,28 @@ namespace Scenes.Template._01_OneSceneGame
             _startButton.OnClickAsObservable().Subscribe(_ =>
             {
                 _buttonSound.Play();
-                _titlePanel.SetActive(false);
-                _gamePanel.SetActive(true);
                 Save.IncrementPlayCount();
+
+                _fade.DOFade(1f, 0.5f)
+                    .OnComplete(() =>
+                    {
+                        _titlePanel.gameObject.SetActive(false);
+                        _gamePanel.gameObject.SetActive(true);
+                        _fade.DOFade(0f, 0.5f);
+                        Save.IncrementPlayCount();
+                    });
             });
             
             _backButton.OnClickAsObservable().Subscribe(_ =>
             {
                 _buttonSound.Play();
-                _titlePanel.SetActive(true);
-                _gamePanel.SetActive(false);
+                _fade.DOFade(1f, 0.5f)
+                    .OnComplete(() =>
+                    {
+                        _titlePanel.gameObject.SetActive(true);
+                        _gamePanel.gameObject.SetActive(false);
+                        _fade.DOFade(0f, 0.5f);
+                    });
             });
         }
     }
