@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Scenes.Template._01_OneSceneGame
 {
-    public class NewBehaviourScript : MonoBehaviour
+    public class Main : MonoBehaviour
     {
         [Header("Panel")]
         [SerializeField] GameObject _titlePanel;
@@ -20,6 +20,7 @@ namespace Scenes.Template._01_OneSceneGame
         
         void Start()
         {
+            Debug.Log("Play Count: " + Save.GetPlayCount());
             _bgmSound.Play();
             
             _startButton.OnClickAsObservable().Subscribe(_ =>
@@ -27,6 +28,7 @@ namespace Scenes.Template._01_OneSceneGame
                 _buttonSound.Play();
                 _titlePanel.SetActive(false);
                 _gamePanel.SetActive(true);
+                Save.IncrementPlayCount();
             });
             
             _backButton.OnClickAsObservable().Subscribe(_ =>
