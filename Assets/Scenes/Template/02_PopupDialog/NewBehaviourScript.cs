@@ -6,14 +6,14 @@ namespace Scenes.Template._02_PopupDialog
 {
     public class NewBehaviourScript : MonoBehaviour
     {
+        [SerializeField] PopupDialog _popupDialog;
         [SerializeField] Button _button;
         
         void Start()
         {
-            // uniRxでButtonのクリックイベントを追加
             _button.OnClickAsObservable().Subscribe(_ =>
             {
-                // PopupDialogを表示
+                _popupDialog.Show();
             });
         }
     }
