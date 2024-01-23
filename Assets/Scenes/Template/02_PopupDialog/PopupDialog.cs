@@ -8,8 +8,9 @@ namespace Scenes.Template._02_PopupDialog
         [SerializeField] GameObject _popupDialog;
         [SerializeField] TextMeshProUGUI _messageText;
         
-        public void Show()
+        public void Show(string message)
         {
+            _messageText.text = message;
             _popupDialog.SetActive(true);
         }
     }
