@@ -13,7 +13,13 @@ namespace Scenes.Template._02_PopupDialog
         {
             _button.OnClickAsObservable().Subscribe(_ =>
             {
-                _popupDialog.Show("Hello World!");
+                _popupDialog.Show("Hello World!", () =>
+                {
+                    Debug.Log("OK");
+                }, () =>
+                {
+                    Debug.Log("Cancel");
+                });
             });
         }
     }
