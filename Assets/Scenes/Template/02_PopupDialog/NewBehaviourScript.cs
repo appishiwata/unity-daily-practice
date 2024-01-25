@@ -8,6 +8,7 @@ namespace Scenes.Template._02_PopupDialog
     {
         [SerializeField] PopupDialog _popupDialog;
         [SerializeField] Button _button;
+        [SerializeField] Button _buttonOnlyOk;
         
         void Start()
         {
@@ -20,6 +21,14 @@ namespace Scenes.Template._02_PopupDialog
                 {
                     Debug.Log("Cancel");
                 });
+            });
+            
+            _buttonOnlyOk.OnClickAsObservable().Subscribe(_ =>
+            {
+                _popupDialog.Show("Only OK", () =>
+                {
+                    Debug.Log("OK");
+                }, null);
             });
         }
     }

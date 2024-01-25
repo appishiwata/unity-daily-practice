@@ -36,6 +36,8 @@ namespace Scenes.Template._02_PopupDialog
             _popupDialog.SetActive(true);
             _okAction = okAction;
             _cancelAction = cancelAction;
+            
+            _cancelButton.gameObject.SetActive(cancelAction != null);
         }
     }
 }
