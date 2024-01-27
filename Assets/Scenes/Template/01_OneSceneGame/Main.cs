@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Scenes.Template._02_PopupDialog;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Scenes.Template._01_OneSceneGame
         [Header("TitlePanel")]
         [SerializeField] GameObject _titlePanel;
         [SerializeField] Button _startButton;
+        [SerializeField] Button _resetButton;
         [SerializeField] TextMeshProUGUI _playCountText;
 
         [Header("GamePanel")]
@@ -23,6 +25,9 @@ namespace Scenes.Template._01_OneSceneGame
         [Header("Sound")]
         [SerializeField] AudioSource _buttonSound;
         [SerializeField] AudioSource _bgmSound;
+        
+        [Header("Other")]
+        [SerializeField] PopupDialog _popupDialog;
         
         void Start()
         {
@@ -54,6 +59,19 @@ namespace Scenes.Template._01_OneSceneGame
                         InitTitlePanel();
                         _fade.DOFade(0f, 0.5f);
                     });
+            }).AddTo(this);
+            
+            _resetButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                _buttonSound.Play();
+                _popupDialog.Show("Are you sure you want to reset the play count?", () =>
+                {
+                    Save.ResetPlayCount();
+                    InitTitlePanel();
+                }, () =>
+                {
+                    Debug.Log("Cancel");
+                });
             }).AddTo(this);
         }
         

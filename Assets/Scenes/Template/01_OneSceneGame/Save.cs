@@ -16,5 +16,10 @@ namespace Scenes.Template._01_OneSceneGame
         {
             return PlayerPrefs.GetInt(Key, 0);
         }
+        
+        public static void ResetPlayCount()
+        {
+            PlayerPrefs.SetInt(Key, 0);
+        }
     }
 }
