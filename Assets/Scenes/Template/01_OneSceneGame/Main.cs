@@ -34,7 +34,7 @@ namespace Scenes.Template._01_OneSceneGame
             InitTitlePanel();
             _bgmSound.Play();
 
-            _startButton.OnClickAsObservable().Subscribe(_ =>
+            _startButton.OnClickAsObservable().ThrottleFirst(System.TimeSpan.FromSeconds(1)).Subscribe(_ =>
             {
                 _buttonSound.Play();
                 Save.IncrementPlayCount();
@@ -48,7 +48,7 @@ namespace Scenes.Template._01_OneSceneGame
                     });
             }).AddTo(this);
             
-            _backButton.OnClickAsObservable().Subscribe(_ =>
+            _backButton.OnClickAsObservable().ThrottleFirst(System.TimeSpan.FromSeconds(1)).Subscribe(_ =>
             {
                 _buttonSound.Play();
                 _fade.DOFade(1f, 0.5f)
@@ -61,7 +61,7 @@ namespace Scenes.Template._01_OneSceneGame
                     });
             }).AddTo(this);
             
-            _resetButton.OnClickAsObservable().Subscribe(_ =>
+            _resetButton.OnClickAsObservable().ThrottleFirst(System.TimeSpan.FromSeconds(1)).Subscribe(_ =>
             {
                 _buttonSound.Play();
                 _popupDialog.Show("Are you sure you want to reset the play count?", () =>
