@@ -16,6 +16,7 @@ namespace Scenes.Demo._02_TwentyFiveClick
             _button.OnClickAsObservable().Subscribe(_ =>
             {
                 Debug.Log(_number);
+                CheckNumber(_number);
             });
         }
         
@@ -23,6 +24,21 @@ namespace Scenes.Demo._02_TwentyFiveClick
         {
             _number = number;
             _numberText.text = number.ToString();
+        }
+
+        private void DisableButton()
+        {
+            _button.interactable = false;
+        }
+
+        private void CheckNumber(int number)
+        {
+            if (number == Main.currentNumber)
+            {
+                Debug.Log("Correct!");
+                DisableButton();
+                Main.currentNumber++;
+            }
         }
     }
 }

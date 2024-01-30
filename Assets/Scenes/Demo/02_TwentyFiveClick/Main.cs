@@ -4,11 +4,13 @@ using UnityEngine;
 
 namespace Scenes.Demo._02_TwentyFiveClick
 {
-    public class NewBehaviourScript : MonoBehaviour
+    public class Main : MonoBehaviour
     {
         [SerializeField] GameObject _numberButtonPrefab;
         [SerializeField] Transform _content;
-
+        
+        public static int currentNumber = 1;
+        
         void Start()
         {
             List<int> numbers = Enumerable.Range(1, 25).OrderBy(_ => Random.value).ToList();
