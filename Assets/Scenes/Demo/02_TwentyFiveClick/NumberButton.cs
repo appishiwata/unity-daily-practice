@@ -11,12 +11,13 @@ namespace Scenes.Demo._02_TwentyFiveClick
         [SerializeField] TextMeshProUGUI _numberText;
         private int _number;
         
+        public static readonly Subject<NumberButton> OnClickButton = new Subject<NumberButton>();
+        
         void Start()
         {
-            _button.OnClickAsObservable().Subscribe(_ =>
+            _button.onClick.AsObservable().Subscribe(_ =>
             {
-                Debug.Log(_number);
-                CheckNumber(_number);
+                OnClickButton.OnNext(this);
             });
         }
         
@@ -25,20 +26,15 @@ namespace Scenes.Demo._02_TwentyFiveClick
             _number = number;
             _numberText.text = number.ToString();
         }
-
-        private void DisableButton()
+        
+        public int GetNumber()
         {
-            _button.interactable = false;
+            return _number;
         }
 
-        private void CheckNumber(int number)
+        public void DisableButton()
         {
-            if (number == Main.currentNumber)
-            {
-                Debug.Log("Correct!");
-                DisableButton();
-                Main.currentNumber++;
-            }
+            _button.interactable = false;
         }
     }
 }
