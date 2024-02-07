@@ -14,7 +14,10 @@ namespace Scenes.Template._03_MultiSceneGame
             _backButton.OnClickAsObservable().Subscribe(_ =>
             {
                 AudioManager.Instance.PlayButtonSound();
-                SceneManager.LoadScene("TitleScene");
+                AnimationManager.Instance.ShowFade(() =>
+                {
+                    SceneManager.LoadScene("TitleScene");
+                });
             }).AddTo(this);
         }
     }
