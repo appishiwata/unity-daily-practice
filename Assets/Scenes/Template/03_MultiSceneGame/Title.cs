@@ -1,3 +1,4 @@
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,7 @@ namespace Scenes.Template._03_MultiSceneGame
     public class Title : MonoBehaviour
     {
         [SerializeField] Button _startButton;
+        [SerializeField] TextMeshProUGUI _playCountText;
         
         [Header("DontDestroyOnLoad")]
         [SerializeField] AudioManager _audioManager;
@@ -25,14 +27,25 @@ namespace Scenes.Template._03_MultiSceneGame
 
         void Start()
         {
-            _startButton.OnClickAsObservable().Subscribe(_ =>
+            InitTitlePanel();
+            
+            _startButton
+                .OnClickAsObservable()
+                .ThrottleFirst(System.TimeSpan.FromSeconds(1))
+                .Subscribe(_ =>
             {
                 AudioManager.Instance.PlayButtonSound();
+                SaveManager.IncrementPlayCount();
                 AnimationManager.Instance.ShowFade(() =>
                 {
                     SceneManager.LoadScene("GameScene");
                 });
             }).AddTo(this);
+        }
+        
+        void InitTitlePanel()
+        {
+            _playCountText.text = "Play Count: " + SaveManager.GetPlayCount();
         }
     }
 }
