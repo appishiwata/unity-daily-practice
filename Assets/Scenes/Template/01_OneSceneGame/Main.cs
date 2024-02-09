@@ -51,14 +51,21 @@ namespace Scenes.Template._01_OneSceneGame
             _backButton.OnClickAsObservable().ThrottleFirst(System.TimeSpan.FromSeconds(1)).Subscribe(_ =>
             {
                 _buttonSound.Play();
-                _fade.DOFade(1f, 0.5f)
-                    .OnComplete(() =>
-                    {
-                        _titlePanel.gameObject.SetActive(true);
-                        _gamePanel.gameObject.SetActive(false);
-                        InitTitlePanel();
-                        _fade.DOFade(0f, 0.5f);
-                    });
+                
+                _popupDialog.Show("Back to Title?", () =>
+                {
+                    _fade.DOFade(1f, 0.5f)
+                        .OnComplete(() =>
+                        {
+                            _titlePanel.gameObject.SetActive(true);
+                            _gamePanel.gameObject.SetActive(false);
+                            InitTitlePanel();
+                            _fade.DOFade(0f, 0.5f);
+                        });
+                }, () =>
+                {
+                    Debug.Log("Cancel");
+                });
             }).AddTo(this);
             
             _resetButton.OnClickAsObservable().ThrottleFirst(System.TimeSpan.FromSeconds(1)).Subscribe(_ =>
