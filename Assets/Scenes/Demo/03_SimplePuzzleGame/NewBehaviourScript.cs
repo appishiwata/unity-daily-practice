@@ -37,5 +37,29 @@ namespace Scenes.Demo._03_SimplePuzzleGame
                 pieces[indexB].transform.position = tmp;
             }
         }
+        
+        void Update()
+        {
+            // ピースを入れ換える
+            if(Input.GetMouseButtonUp(0))
+            {
+                // タッチした場所にレイを飛ばす
+                Vector2 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                // 第2引数はレイがどの方向に進むか（zeroにすると指定された点）
+                RaycastHit2D hit2d = Physics2D.Raycast(worldPosition, Vector2.zero);
+
+                print("mousePosition: "+Input.mousePosition);
+                print("worldPosition: "+worldPosition);
+
+                // 当たり判定が合った場合
+                if(hit2d)
+                {
+                    // 当たり判定があったオブジェクトを取得
+                    GameObject hitPiece = hit2d.collider.gameObject;
+
+                    Debug.Log("当たり判定があったピース "+hitPiece);
+                }
+            }
+        }
     }
 }
