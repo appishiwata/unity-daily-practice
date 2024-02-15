@@ -57,7 +57,19 @@ namespace Scenes.Demo._03_SimplePuzzleGame
                     // 当たり判定があったオブジェクトを取得
                     GameObject hitPiece = hit2d.collider.gameObject;
 
-                    Debug.Log("当たり判定があったピース "+hitPiece);
+                    // 1枚目選択
+                    if(selectPiece == null)
+                    {
+                        selectPiece = hitPiece;
+                    }
+                    // 2枚目は位置を入れかえて、選択状態を解除
+                    else
+                    {
+                        Vector2 position = hitPiece.transform.position;
+                        hitPiece.transform.position = selectPiece.transform.position;
+                        selectPiece.transform.position = position;
+                        selectPiece = null;
+                    }
                 }
             }
         }
