@@ -69,9 +69,32 @@ namespace Scenes.Demo._03_SimplePuzzleGame
                         hitPiece.transform.position = selectPiece.transform.position;
                         selectPiece.transform.position = position;
                         selectPiece = null;
+                        
+                        // クリア判定
+                        if(IsClear())
+                        {
+                            print("クリア！");
+                        }
                     }
                 }
             }
+        }
+        
+        // クリア判定
+        bool IsClear()
+        {
+            // 全てのピースが初期位置かどうか
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                Vector2 position = pieces[i].transform.position;
+                // 1つでも違えば終了
+                if (startPositions[i] != position)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
