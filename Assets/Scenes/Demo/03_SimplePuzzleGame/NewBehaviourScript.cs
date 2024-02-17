@@ -1,94 +1,88 @@
 using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 namespace Scenes.Demo._03_SimplePuzzleGame
 {
     public class NewBehaviourScript : MonoBehaviour
     {
-        // 全ピース
-        [SerializeField] List<GameObject> pieces;
-        // ピースのシャッフル回数
-        [SerializeField] int shuffleCount;
-        // 初期位置
-        List<Vector2> startPositions;
-        // 選択しているピース
-        GameObject selectPiece;
+        /*
+         * 3Dプロジェクトの場合は3Dカメラなのでうまく判定されない。
+         * カメラのProjectionをOrthographicに変更してうまくいった。
+         */
+        
+        [SerializeField] List<GameObject> _pieces;
+        [SerializeField] int _shuffleCount;
+        [SerializeField] GameObject _clearPanel;
+        [SerializeField] TextMeshProUGUI _clearText;
+        readonly List<Vector2> _startPositions = new();
+        GameObject _selectPiece;
 
-        // Start is called before the first frame update
         void Start()
         {
             // 初期位置保存
-            startPositions = new List<Vector2>();
-
-            foreach (var item in pieces)
+            foreach (var item in _pieces)
             {
                 Vector2 position = item.transform.position;
-                startPositions.Add(position);
+                _startPositions.Add(position);
             }
 
             // ピース並び替え
-            for (int i = 0; i < shuffleCount; i++)
+            for (int i = 0; i < _shuffleCount; i++)
             {
-                int indexA = Random.Range(0, pieces.Count);
-                int indexB = Random.Range(0, pieces.Count);
+                int indexA = Random.Range(0, _pieces.Count);
+                int indexB = Random.Range(0, _pieces.Count);
 
-                Vector2 tmp = pieces[indexA].transform.position;
-                pieces[indexA].transform.position = pieces[indexB].transform.position;
-                pieces[indexB].transform.position = tmp;
+                Vector2 tmp = _pieces[indexA].transform.position;
+                _pieces[indexA].transform.position = _pieces[indexB].transform.position;
+                _pieces[indexB].transform.position = tmp;
             }
         }
         
         void Update()
         {
-            // ピースを入れ換える
             if(Input.GetMouseButtonUp(0))
             {
                 // タッチした場所にレイを飛ばす
-                Vector2 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 worldPosition = Camera.main!.ScreenToWorldPoint(Input.mousePosition);
                 // 第2引数はレイがどの方向に進むか（zeroにすると指定された点）
                 RaycastHit2D hit2d = Physics2D.Raycast(worldPosition, Vector2.zero);
 
-                print("mousePosition: "+Input.mousePosition);
-                print("worldPosition: "+worldPosition);
-
-                // 当たり判定が合った場合
                 if(hit2d)
                 {
-                    // 当たり判定があったオブジェクトを取得
                     GameObject hitPiece = hit2d.collider.gameObject;
 
                     // 1枚目選択
-                    if(selectPiece == null)
+                    if(_selectPiece == null)
                     {
-                        selectPiece = hitPiece;
+                        _selectPiece = hitPiece;
                     }
                     // 2枚目は位置を入れかえて、選択状態を解除
                     else
                     {
                         Vector2 position = hitPiece.transform.position;
-                        hitPiece.transform.position = selectPiece.transform.position;
-                        selectPiece.transform.position = position;
-                        selectPiece = null;
+                        hitPiece.transform.position = _selectPiece.transform.position;
+                        _selectPiece.transform.position = position;
+                        _selectPiece = null;
                         
-                        // クリア判定
                         if(IsClear())
                         {
-                            print("クリア！");
+                            Debug.Log("クリア！");
+                            _clearPanel.SetActive(true);
+                            _clearText.DOScale(2f, 0.5f);
                         }
                     }
                 }
             }
         }
         
-        // クリア判定
         bool IsClear()
         {
-            // 全てのピースが初期位置かどうか
-            for (int i = 0; i < pieces.Count; i++)
+            for (int i = 0; i < _pieces.Count; i++)
             {
-                Vector2 position = pieces[i].transform.position;
-                // 1つでも違えば終了
-                if (startPositions[i] != position)
+                Vector2 position = _pieces[i].transform.position;
+                if (_startPositions[i] != position)
                 {
                     return false;
                 }
