@@ -18,6 +18,23 @@ namespace Scenes.Demo._04_SlidePuzzleGame
         // Start is called before the first frame update
         void Start()
         {
+            // 0番と隣接するピース
+            List<GameObject> movablePieces = new List<GameObject>();
+
+            // 0番と隣接するピースをリストに追加
+            foreach (var item in pieces)
+            {
+                if(GetEmptyPiece(item) != null)
+                {
+                    movablePieces.Add(item);
+                }    
+            }
+
+            // 隣接するピースをランダムで入れかえる
+            int rnd = Random.Range(0, movablePieces.Count);
+            GameObject piece = movablePieces[rnd];
+            SwapPiece(piece, pieces[0]);
+
             // ボタン非表示
             buttonRetry.SetActive(false);
         }
@@ -26,6 +43,37 @@ namespace Scenes.Demo._04_SlidePuzzleGame
         void Update()
         {
         
+        }
+
+        // 引数のピースが0番のピースと隣接していたら0番のピースを返す
+        GameObject GetEmptyPiece(GameObject piece)
+        {
+            // 2点間の距離を代入
+            float dist =
+                Vector2.Distance(piece.transform.position, pieces[0].transform.position);
+
+            // 距離が1なら0番のピースを返す（2個以上離れていたり、斜めの場合は1より大きい距離になる）
+            if (dist == 1)
+            {
+                return pieces[0];
+            }
+
+            return null;
+        }
+
+        // 2つのピースの位置を入れかえる
+        void SwapPiece(GameObject pieceA, GameObject pieceB)
+        {
+            // どちらかがnullなら処理をしない
+            if (pieceA == null || pieceB == null)
+            {
+                return;
+            }
+
+            // AとBのポジションを入れかえる
+            Vector2 position = pieceA.transform.position;
+            pieceA.transform.position = pieceB.transform.position;
+            pieceB.transform.position = position;
         }
     }
 }
