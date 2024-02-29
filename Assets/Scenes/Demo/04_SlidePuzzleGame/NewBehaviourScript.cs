@@ -42,7 +42,25 @@ namespace Scenes.Demo._04_SlidePuzzleGame
         // Update is called once per frame
         void Update()
         {
-        
+            // タッチ処理
+            if(Input.GetMouseButtonUp(0))
+            {
+                // スクリーン座標からワールド座標に変換
+                Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                // レイを飛ばす
+                RaycastHit2D hit2d = Physics2D.Raycast(worldPoint, Vector2.zero);
+
+                // 当たり判定があった
+                if(hit2d)
+                {
+                    // ヒットしたゲームオブジェクト
+                    GameObject hitPiece = hit2d.collider.gameObject;
+                    // 0番のピースと隣接していればデータが入る
+                    GameObject emptyPiece = GetEmptyPiece(hitPiece);
+                    // 選んだピースと0番のピースを入れかえる
+                    SwapPiece(hitPiece, emptyPiece);
+                }
+            }
         }
 
         // 引数のピースが0番のピースと隣接していたら0番のピースを返す
