@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Scenes.Demo._04_SlidePuzzleGame
 {
@@ -18,22 +19,33 @@ namespace Scenes.Demo._04_SlidePuzzleGame
         // Start is called before the first frame update
         void Start()
         {
-            // 0番と隣接するピース
-            List<GameObject> movablePieces = new List<GameObject>();
-
-            // 0番と隣接するピースをリストに追加
+            // 初期位置を保存
+            startPositions = new List<Vector2>();
             foreach (var item in pieces)
             {
-                if(GetEmptyPiece(item) != null)
-                {
-                    movablePieces.Add(item);
-                }    
+                startPositions.Add(item.transform.position);
             }
 
-            // 隣接するピースをランダムで入れかえる
-            int rnd = Random.Range(0, movablePieces.Count);
-            GameObject piece = movablePieces[rnd];
-            SwapPiece(piece, pieces[0]);
+            // 指定回数シャッフル
+            for (int i = 0; i < shuffleCount; i++)
+            {
+                // 0番と隣接するピース
+                List<GameObject> movablePieces = new List<GameObject>();
+
+                // 0番と隣接するピースをリストに追加
+                foreach (var item in pieces)
+                {
+                    if (GetEmptyPiece(item) != null)
+                    {
+                        movablePieces.Add(item);
+                    }
+                }
+
+                // 隣接するピースをランダムで入れかえる
+                int rnd = Random.Range(0, movablePieces.Count);
+                GameObject piece = movablePieces[rnd];
+                SwapPiece(piece, pieces[0]);
+            }
 
             // ボタン非表示
             buttonRetry.SetActive(false);
@@ -59,6 +71,27 @@ namespace Scenes.Demo._04_SlidePuzzleGame
                     GameObject emptyPiece = GetEmptyPiece(hitPiece);
                     // 選んだピースと0番のピースを入れかえる
                     SwapPiece(hitPiece, emptyPiece);
+
+                    // クリア判定
+                    buttonRetry.SetActive(true);
+
+                    // 正解の位置と違うピースを探す
+                    for (int i = 0; i < pieces.Count; i++)
+                    {
+                        // 現在のポジション
+                        Vector2 position = pieces[i].transform.position;
+                        // 初期位置と違ったらボタンを非表示
+                        if(position != startPositions[i])
+                        {
+                            buttonRetry.SetActive(false);
+                        }
+                    }
+
+                    // クリア状態
+                    if(buttonRetry.activeSelf)
+                    {
+                        Debug.Log("クリア！！");
+                    }
                 }
             }
         }
@@ -92,6 +125,13 @@ namespace Scenes.Demo._04_SlidePuzzleGame
             Vector2 position = pieceA.transform.position;
             pieceA.transform.position = pieceB.transform.position;
             pieceB.transform.position = position;
+        }
+        
+        // リトライボタン
+        public void OnClickRetry()
+        {
+            // 現在のシーンを再読み込み
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }
