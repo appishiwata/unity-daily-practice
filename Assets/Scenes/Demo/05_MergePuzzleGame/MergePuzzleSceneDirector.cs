@@ -33,7 +33,26 @@ namespace Scenes.Demo._05_MergePuzzleGame
         // Update is called once per frame
         void Update()
         {
-        
+            // アイテムがなければここから下の処理はしない
+            if (!currentBubble) return;
+
+            // マウスポジション（スクリーン座標）からワールド座標に変換
+            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            // x座標をマウスに合わせる
+            Vector2 bubblePosition = new Vector2(worldPoint.x, SpawnItemY);
+            currentBubble.transform.position = bubblePosition;
+
+            // タッチ処理
+            if(Input.GetMouseButtonUp(0))
+            {
+                // 重力をセットしてドロップ
+                currentBubble.GetComponent<Rigidbody2D>().gravityScale = 1;
+                // 所持アイテムリセット
+                currentBubble = null;
+                // 次のアイテム
+                StartCoroutine(SpawnCurrentItem());
+            }
         }
 
         // アイテム生成
