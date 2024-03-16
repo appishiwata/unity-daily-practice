@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Scenes.Demo._05_MergePuzzleGame
 {
@@ -12,17 +13,25 @@ namespace Scenes.Demo._05_MergePuzzleGame
         // UI
         [SerializeField] TextMeshProUGUI textScore;
         [SerializeField] GameObject panelResult;
-
+        // Audio
+        [SerializeField] AudioClip seDrop;
+        [SerializeField] AudioClip seMerge;
+        
         // スコア
         int score;
         // 現在のアイテム
         BubbleController currentBubble;
         // 生成位置
         const float SpawnItemY = 3.5f;
+        // Audio再生装置
+        AudioSource audioSource;
 
         // Start is called before the first frame update
         void Start()
         {
+            // サウンド再生用
+            audioSource = GetComponent<AudioSource>();
+
             // リザルト画面を非表示
             panelResult.SetActive(false);
 
@@ -52,6 +61,8 @@ namespace Scenes.Demo._05_MergePuzzleGame
                 currentBubble = null;
                 // 次のアイテム
                 StartCoroutine(SpawnCurrentItem());
+                // SE再生
+                audioSource.PlayOneShot(seDrop);
             }
         }
 
@@ -88,10 +99,21 @@ namespace Scenes.Demo._05_MergePuzzleGame
             // 落ちないように重力を0にする
             currentBubble.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
-        
+
         // アイテムを合体させる
         public void Merge(BubbleController bubbleA, BubbleController bubbleB)
         {
+            // 操作中のアイテムとぶつかったらゲームオーバー
+            if(currentBubble == bubbleA || currentBubble == bubbleB)
+            {
+                // このUpdateに入らないようにする
+                enabled = false;
+                // リザルトパネル表示
+                panelResult.SetActive(true);
+
+                return;
+            }
+
             // マージ済
             if (bubbleA.IsMerged || bubbleB.IsMerged) return;
 
@@ -116,6 +138,19 @@ namespace Scenes.Demo._05_MergePuzzleGame
             // シーンから削除
             Destroy(bubbleA.gameObject);
             Destroy(bubbleB.gameObject);
+
+            // 点数計算と表示更新
+            score += newBubble.ColorType * 10;
+            textScore.text = "" + score;
+
+            // SE再生
+            audioSource.PlayOneShot(seMerge);
+        }
+
+        // リトライボタン
+        public void OnClickRetry()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }
