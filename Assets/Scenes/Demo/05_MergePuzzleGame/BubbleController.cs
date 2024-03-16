@@ -26,5 +26,17 @@ namespace Scenes.Demo._05_MergePuzzleGame
                 Destroy(gameObject);
             }
         }
+        
+        // 当たり判定が発生したら呼ばれる
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            // バブルじゃない
+            BubbleController bubble =
+                collision.gameObject.GetComponent<BubbleController>();
+            if (!bubble) return;
+
+            // 合体させる
+            SceneDirector.Merge(this, bubble);
+        }
     }
 }

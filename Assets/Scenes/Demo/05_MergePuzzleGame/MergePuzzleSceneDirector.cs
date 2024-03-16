@@ -88,5 +88,34 @@ namespace Scenes.Demo._05_MergePuzzleGame
             // 落ちないように重力を0にする
             currentBubble.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
+        
+        // アイテムを合体させる
+        public void Merge(BubbleController bubbleA, BubbleController bubbleB)
+        {
+            // マージ済
+            if (bubbleA.IsMerged || bubbleB.IsMerged) return;
+
+            // 違う色
+            if (bubbleA.ColorType != bubbleB.ColorType) return;
+
+            // 次に生成する色が用意してあるリストの最大数を超える
+            int nextColor = bubbleA.ColorType + 1;
+            if (prefabBubbles.Count - 1 < nextColor) return;
+
+            // 2点間の中心
+            Vector2 lerpPosition =
+                Vector2.Lerp(bubbleA.transform.position, bubbleB.transform.position, 0.5f);
+
+            // 新しいアイテムを生成
+            BubbleController newBubble = SpawnItem(lerpPosition, nextColor);
+
+            // マージ済フラグON
+            bubbleA.IsMerged = true;
+            bubbleB.IsMerged = true;
+
+            // シーンから削除
+            Destroy(bubbleA.gameObject);
+            Destroy(bubbleB.gameObject);
+        }
     }
 }
