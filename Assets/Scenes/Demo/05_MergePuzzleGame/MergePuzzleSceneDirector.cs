@@ -9,60 +9,58 @@ namespace Scenes.Demo._05_MergePuzzleGame
     public class MergePuzzleSceneDirector : MonoBehaviour
     {
         // アイテムのプレハブ
-        [SerializeField] List<BubbleController> prefabBubbles;
+        [SerializeField] List<BubbleController> _prefabBubbles;
         // UI
-        [SerializeField] TextMeshProUGUI textScore;
-        [SerializeField] GameObject panelResult;
+        [SerializeField] TextMeshProUGUI _textScore;
+        [SerializeField] GameObject _panelResult;
         // Audio
-        [SerializeField] AudioClip seDrop;
-        [SerializeField] AudioClip seMerge;
+        [SerializeField] AudioClip _seDrop;
+        [SerializeField] AudioClip _seMerge;
         
         // スコア
-        int score;
+        int _score;
         // 現在のアイテム
-        BubbleController currentBubble;
+        BubbleController _currentBubble;
         // 生成位置
         const float SpawnItemY = 3.5f;
         // Audio再生装置
-        AudioSource audioSource;
+        AudioSource _audioSource;
 
-        // Start is called before the first frame update
         void Start()
         {
             // サウンド再生用
-            audioSource = GetComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
 
             // リザルト画面を非表示
-            panelResult.SetActive(false);
+            _panelResult.SetActive(false);
 
             // 最初のアイテムを生成
             StartCoroutine(SpawnCurrentItem());
         }
 
-        // Update is called once per frame
         void Update()
         {
             // アイテムがなければここから下の処理はしない
-            if (!currentBubble) return;
+            if (!_currentBubble) return;
 
             // マウスポジション（スクリーン座標）からワールド座標に変換
-            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 worldPoint = Camera.main!.ScreenToWorldPoint(Input.mousePosition);
 
             // x座標をマウスに合わせる
             Vector2 bubblePosition = new Vector2(worldPoint.x, SpawnItemY);
-            currentBubble.transform.position = bubblePosition;
+            _currentBubble.transform.position = bubblePosition;
 
             // タッチ処理
             if(Input.GetMouseButtonUp(0))
             {
                 // 重力をセットしてドロップ
-                currentBubble.GetComponent<Rigidbody2D>().gravityScale = 1;
+                _currentBubble.GetComponent<Rigidbody2D>().gravityScale = 1;
                 // 所持アイテムリセット
-                currentBubble = null;
+                _currentBubble = null;
                 // 次のアイテム
                 StartCoroutine(SpawnCurrentItem());
                 // SE再生
-                audioSource.PlayOneShot(seDrop);
+                _audioSource.PlayOneShot(_seDrop);
             }
         }
 
@@ -70,7 +68,7 @@ namespace Scenes.Demo._05_MergePuzzleGame
         BubbleController SpawnItem(Vector2 position, int colorType = -1)
         {
             // 色ランダム
-            int index = Random.Range(0, prefabBubbles.Count / 2);
+            int index = Random.Range(0, _prefabBubbles.Count / 2);
 
             // 色の指定があれば上書き
             if(0 < colorType)
@@ -80,11 +78,11 @@ namespace Scenes.Demo._05_MergePuzzleGame
 
             // 生成
             BubbleController bubble =
-                Instantiate(prefabBubbles[index], position, Quaternion.identity);
+                Instantiate(_prefabBubbles[index], position, Quaternion.identity);
 
             // 必須データセット
-            bubble.SceneDirector = this;
-            bubble.ColorType = index;
+            bubble._sceneDirector = this;
+            bubble._colorType = index;
 
             return bubble;
         }
@@ -95,34 +93,34 @@ namespace Scenes.Demo._05_MergePuzzleGame
             // 指定された秒数待つ
             yield return new WaitForSeconds(1.0f);
             // 生成されたアイテムを保持する
-            currentBubble = SpawnItem(new Vector2(0, SpawnItemY));
+            _currentBubble = SpawnItem(new Vector2(0, SpawnItemY));
             // 落ちないように重力を0にする
-            currentBubble.GetComponent<Rigidbody2D>().gravityScale = 0;
+            _currentBubble.GetComponent<Rigidbody2D>().gravityScale = 0;
         }
 
         // アイテムを合体させる
         public void Merge(BubbleController bubbleA, BubbleController bubbleB)
         {
             // 操作中のアイテムとぶつかったらゲームオーバー
-            if(currentBubble == bubbleA || currentBubble == bubbleB)
+            if(_currentBubble == bubbleA || _currentBubble == bubbleB)
             {
                 // このUpdateに入らないようにする
                 enabled = false;
                 // リザルトパネル表示
-                panelResult.SetActive(true);
+                _panelResult.SetActive(true);
 
                 return;
             }
 
             // マージ済
-            if (bubbleA.IsMerged || bubbleB.IsMerged) return;
+            if (bubbleA._isMerged || bubbleB._isMerged) return;
 
             // 違う色
-            if (bubbleA.ColorType != bubbleB.ColorType) return;
+            if (bubbleA._colorType != bubbleB._colorType) return;
 
             // 次に生成する色が用意してあるリストの最大数を超える
-            int nextColor = bubbleA.ColorType + 1;
-            if (prefabBubbles.Count - 1 < nextColor) return;
+            int nextColor = bubbleA._colorType + 1;
+            if (_prefabBubbles.Count - 1 < nextColor) return;
 
             // 2点間の中心
             Vector2 lerpPosition =
@@ -132,19 +130,19 @@ namespace Scenes.Demo._05_MergePuzzleGame
             BubbleController newBubble = SpawnItem(lerpPosition, nextColor);
 
             // マージ済フラグON
-            bubbleA.IsMerged = true;
-            bubbleB.IsMerged = true;
+            bubbleA._isMerged = true;
+            bubbleB._isMerged = true;
 
             // シーンから削除
             Destroy(bubbleA.gameObject);
             Destroy(bubbleB.gameObject);
 
             // 点数計算と表示更新
-            score += newBubble.ColorType * 10;
-            textScore.text = "" + score;
+            _score += newBubble._colorType * 10;
+            _textScore.text = "" + _score;
 
             // SE再生
-            audioSource.PlayOneShot(seMerge);
+            _audioSource.PlayOneShot(_seMerge);
         }
 
         // リトライボタン

@@ -5,19 +5,12 @@ namespace Scenes.Demo._05_MergePuzzleGame
     public class BubbleController : MonoBehaviour
     {
         // シーンディレクター
-        public MergePuzzleSceneDirector SceneDirector;
+        public MergePuzzleSceneDirector _sceneDirector;
         // カラー
-        public int ColorType;
+        public int _colorType;
         // マージ済フラグ
-        public bool IsMerged;
+        public bool _isMerged;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
         void Update()
         {
             // 画面外に落ちたら消す
@@ -36,7 +29,7 @@ namespace Scenes.Demo._05_MergePuzzleGame
             if (!bubble) return;
 
             // 合体させる
-            SceneDirector.Merge(this, bubble);
+            _sceneDirector.Merge(this, bubble);
         }
     }
 }
