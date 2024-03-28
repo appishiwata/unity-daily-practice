@@ -47,7 +47,24 @@ namespace Scenes.Demo._06_SamePuzzleGame
         // Update is called once per frame
         void Update()
         {
-        
+            // タッチ処理
+            if(Input.GetMouseButtonUp(0))
+            {
+                // スクリーン座標からワールド座標に変換
+                Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit2d = Physics2D.Raycast(worldPoint, Vector2.zero);
+
+                // 削除されたアイテムをクリア
+                bubbles.RemoveAll(item => item == null);
+
+                // なにか当たり判定があれば
+                if(hit2d)
+                {
+                    // 当たり判定があったオブジェクト
+                    GameObject obj = hit2d.collider.gameObject;
+                    DeleteItems(obj);
+                }
+            }
         }
 
         // アイテム生成
@@ -68,6 +85,41 @@ namespace Scenes.Demo._06_SamePuzzleGame
                 // 内部データ追加
                 bubbles.Add(bubble);
             }
+        }
+        
+        // 引数と同じ色のアイテムを削除する
+        void DeleteItems(GameObject target)
+        {
+            // このアイテムと同じ色を追加する
+            List<GameObject> checkItems = new List<GameObject>();
+            // 自分を追加
+            checkItems.Add(target);
+
+            // TODO 全体のアイテムから同じ色を探す
+
+            // 削除可能数に達していなかったらなにもしない
+            if (checkItems.Count < deleteCount) return;
+
+            // 削除してスコア加算
+            List<GameObject> destroyItems = new List<GameObject>();
+            foreach (var item in checkItems)
+            {
+                // かぶりなしの削除したアイテムをカウント
+                if(!destroyItems.Contains(item))
+                {
+                    destroyItems.Add(item);
+                }
+
+                //削除
+                Destroy(item);
+            }
+
+            // 実際に削除した分生成してスコア加算
+            SpawnItem(destroyItems.Count);
+            gameScore += destroyItems.Count * 100;
+
+            // スコア表示更新
+            textGameScore.text = "" + gameScore;
         }
     }
 }
