@@ -62,7 +62,7 @@ namespace Scenes.Demo._06_SamePuzzleGame
                 {
                     // 当たり判定があったオブジェクト
                     GameObject obj = hit2d.collider.gameObject;
-                    DeleteItems(obj);
+                    CheckItems(obj);
                 }
             }
         }
@@ -86,17 +86,10 @@ namespace Scenes.Demo._06_SamePuzzleGame
                 bubbles.Add(bubble);
             }
         }
-        
+
         // 引数と同じ色のアイテムを削除する
-        void DeleteItems(GameObject target)
+        void DeleteItems(List<GameObject> checkItems)
         {
-            // このアイテムと同じ色を追加する
-            List<GameObject> checkItems = new List<GameObject>();
-            // 自分を追加
-            checkItems.Add(target);
-
-            // TODO 全体のアイテムから同じ色を探す
-
             // 削除可能数に達していなかったらなにもしない
             if (checkItems.Count < deleteCount) return;
 
@@ -120,6 +113,65 @@ namespace Scenes.Demo._06_SamePuzzleGame
 
             // スコア表示更新
             textGameScore.text = "" + gameScore;
+        }
+
+        // 同じ色のアイテムを返す
+        List<GameObject> GetSameItems(GameObject target)
+        {
+            List<GameObject> ret = new List<GameObject>();
+
+            foreach (var item in bubbles)
+            {
+                // アイテムがない、同じアイテム、違う色、距離が遠い場合はスキップ
+                if (!item || target == item) continue;
+
+                if(item.GetComponent<SpriteRenderer>().sprite
+                    != target.GetComponent<SpriteRenderer>().sprite)
+                {
+                    continue;
+                }
+
+                float distance
+                    = Vector2.Distance(target.transform.position, item.transform.position);
+
+                if (distance > 1.1f) continue;
+
+                // ここまできたらアイテム追加
+                ret.Add(item);
+            }
+
+            return ret;
+        }
+
+        // 引数と同じ色のアイテムを探す
+        void CheckItems(GameObject target)
+        {
+            // このアイテムと同じ色を追加する
+            List<GameObject> checkItems = new List<GameObject>();
+            // 自分を追加
+            checkItems.Add(target);
+
+            // チェック済のインデックス
+            int checkIndex = 0;
+
+            // checkItemsの最大値までループ
+            while (checkIndex < checkItems.Count)
+            {
+                // 隣接する同じ色を取得
+                List<GameObject> sameItems = GetSameItems(checkItems[checkIndex]);
+                // チェック済のインデックスを進める
+                checkIndex++;
+
+                // まだ追加されていないアイテムを追加する
+                foreach (var item in sameItems)
+                {
+                    if (checkItems.Contains(item)) continue;
+                    checkItems.Add(item);
+                }
+            }
+
+            // 削除
+            DeleteItems(checkItems);
         }
     }
 }
