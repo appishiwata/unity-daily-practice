@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Scenes.Demo._06_SamePuzzleGame
 {
@@ -34,6 +35,9 @@ namespace Scenes.Demo._06_SamePuzzleGame
         // Start is called before the first frame update
         void Start()
         {
+            // Audio
+            audioSource = GetComponent<AudioSource>();
+
             // 全アイテム
             bubbles = new List<GameObject>();
 
@@ -47,6 +51,21 @@ namespace Scenes.Demo._06_SamePuzzleGame
         // Update is called once per frame
         void Update()
         {
+            // ゲームタイマー更新
+            gameTimer -= Time.deltaTime;
+            textGameTimer.text = "" + (int)gameTimer;
+
+            // ゲーム終了
+            if (0 > gameTimer)
+            {
+                // リザルト画面表示
+                panelGameResult.SetActive(true);
+                // Updateに入らないようにする
+                enabled = false;
+                // この時点でUpdateから抜ける
+                return;
+            }
+
             // タッチ処理
             if(Input.GetMouseButtonUp(0))
             {
@@ -93,6 +112,25 @@ namespace Scenes.Demo._06_SamePuzzleGame
             // 削除可能数に達していなかったらなにもしない
             if (checkItems.Count < deleteCount) return;
 
+            // ボーナスとしてオーバーしたカウント*5個削除
+            int overCount = checkItems.Count - deleteCount;
+            overCount *= 5;
+
+            // ランダムなアイテムを削除リストに追加（かぶりの可能性あり）
+            while(overCount > 0)
+            {
+                int rnd = Random.Range(0, bubbles.Count);
+                checkItems.Add(bubbles[rnd]);
+                overCount--;
+
+                // 最後の1個でSE再生
+                if(overCount == 0)
+                {
+                    audioSource.PlayOneShot(seSpecial);
+                }
+            }
+
+
             // 削除してスコア加算
             List<GameObject> destroyItems = new List<GameObject>();
             foreach (var item in checkItems)
@@ -113,6 +151,9 @@ namespace Scenes.Demo._06_SamePuzzleGame
 
             // スコア表示更新
             textGameScore.text = "" + gameScore;
+
+            // SE再生
+            audioSource.PlayOneShot(seBubble);
         }
 
         // 同じ色のアイテムを返す
@@ -173,5 +214,12 @@ namespace Scenes.Demo._06_SamePuzzleGame
             // 削除
             DeleteItems(checkItems);
         }
+
+        // リトライボタン
+        public void OnClickRetry()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
     }
 }
