@@ -30,7 +30,10 @@ namespace Scenes.Demo._06_SamePuzzleGame
         int gameScore;
         // 再生装置
         AudioSource audioSource;
-
+        
+        // ツムツム風
+        List<GameObject> lineBubbles;
+        LineRenderer lineRenderer;
 
         // Start is called before the first frame update
         void Start()
@@ -40,6 +43,11 @@ namespace Scenes.Demo._06_SamePuzzleGame
 
             // 全アイテム
             bubbles = new List<GameObject>();
+
+            // ツムツム風
+            lineBubbles = new List<GameObject>();
+            // 連結したアイテム上のライン
+            lineRenderer = GetComponent<LineRenderer>();
 
             // リザルト画面非表示
             panelGameResult.SetActive(false);
@@ -66,24 +74,86 @@ namespace Scenes.Demo._06_SamePuzzleGame
                 return;
             }
 
+            // タッチ開始
+            if(Input.GetMouseButtonDown(0))
+            {
+                GameObject hitBubble = GetHitBubble();
+
+                // 下準備
+                lineBubbles.Clear();
+
+                // 当たり判定あり
+                if(hitBubble)
+                {
+                    lineBubbles.Add(hitBubble);
+                }
+            }
+            // おしっぱなし
+            else if(Input.GetMouseButton(0))
+            {
+                GameObject hitBubble = GetHitBubble();
+
+                // 当たり判定あり
+                if(hitBubble && lineBubbles.Count > 0)
+                {
+                    // 距離
+                    GameObject pre = lineBubbles[lineBubbles.Count - 1];
+                    float distance
+                        = Vector2.Distance(hitBubble.transform.position, pre.transform.position);
+
+                    // カラー
+                    bool isSameColor
+                        = hitBubble.GetComponent<SpriteRenderer>().sprite == pre.GetComponent<SpriteRenderer>().sprite;
+
+                    if(isSameColor && distance <= 1.5f && !lineBubbles.Contains(hitBubble))
+                    {
+                        // ラインに追加
+                        lineBubbles.Add(hitBubble);
+                    }
+                }
+            }
+            // タッチ終了
+            else if (Input.GetMouseButtonUp(0))
+            {
+                // 削除されたアイテムをクリア
+                bubbles.RemoveAll(item => item == null);
+
+                // アイテム削除
+                DeleteItems(lineBubbles);
+
+                // ラインをクリア
+                lineRenderer.positionCount = 0;
+                lineBubbles.Clear();
+            }
+
+            // ライン描画
+            if(lineBubbles.Count > 1)
+            {
+                // 頂点数
+                lineRenderer.positionCount = lineBubbles.Count;
+                // ラインのポジション
+                for (int i = 0; i < lineBubbles.Count; i++)
+                {
+                    lineRenderer.SetPosition(i, lineBubbles[i].transform.position);
+                }
+            }
+
+    /*
             // タッチ処理
             if(Input.GetMouseButtonUp(0))
             {
-                // スクリーン座標からワールド座標に変換
-                Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit2d = Physics2D.Raycast(worldPoint, Vector2.zero);
+                GameObject hitBubble = GetHitBubble();
 
                 // 削除されたアイテムをクリア
                 bubbles.RemoveAll(item => item == null);
 
                 // なにか当たり判定があれば
-                if(hit2d)
+                if(hitBubble)
                 {
-                    // 当たり判定があったオブジェクト
-                    GameObject obj = hit2d.collider.gameObject;
-                    CheckItems(obj);
+                    CheckItems(hitBubble);
                 }
             }
+    */
         }
 
         // アイテム生成
@@ -213,6 +283,31 @@ namespace Scenes.Demo._06_SamePuzzleGame
 
             // 削除
             DeleteItems(checkItems);
+        }
+
+        // マウスポジションに当たり判定があったバブルを返す
+        GameObject GetHitBubble()
+        {
+            GameObject ret = null;
+
+            // スクリーン座標からワールド座標に変換
+            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit2d = Physics2D.Raycast(worldPoint, Vector2.zero);
+
+            // 当たり判定あり
+            if(hit2d)
+            {
+                // 画像が設定されていたらバブルアイテムと判断する
+                SpriteRenderer spriteRenderer
+                    = hit2d.collider.gameObject.GetComponent<SpriteRenderer>();
+
+                if(spriteRenderer)
+                {
+                    ret = hit2d.collider.gameObject;
+                }
+            }
+
+            return ret;
         }
 
         // リトライボタン
