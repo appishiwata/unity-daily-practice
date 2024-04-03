@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+namespace Scenes.Template._04_CharacterCollect
 {
-    // Start is called before the first frame update
-    void Start()
+    public class NewBehaviourScript : MonoBehaviour
     {
+        [SerializeField] CharactersData _charactersData;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void Start()
+        {
+            // 全キャラ一覧
+            foreach (var character in _charactersData.characters)
+            {
+                Debug.Log(character.name);
+            }
+        }
     }
 }
