@@ -9,6 +9,7 @@ namespace Scenes.Template._04_CharacterCollect
         [System.Serializable]
         public class Character
         {
+            public string id;
             public string name;
         }
 
