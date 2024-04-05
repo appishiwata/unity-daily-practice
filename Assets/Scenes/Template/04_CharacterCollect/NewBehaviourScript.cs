@@ -5,26 +5,17 @@ namespace Scenes.Template._04_CharacterCollect
     public class NewBehaviourScript : MonoBehaviour
     {
         [SerializeField] CharactersData _charactersData;
+        [SerializeField] CharacterCell _characterCellPrefab;
+        [SerializeField] Transform _characterList;
         
         void Start()
         {
-            CollectCharacter("001");
-            
-            // 全キャラ一覧
+            // キャラクター一覧を表示
             foreach (var character in _charactersData.characters)
             {
-                Debug.Log(character.name);
-                
-                if (SaveManager.IsCharacterCollected(character.id))
-                {
-                    Debug.Log("Character already collected!");
-                }
+                var characterCell = Instantiate(_characterCellPrefab, _characterList);
+                characterCell.SetCharacter(character);
             }
-        }
-
-        private void CollectCharacter(string characterId)
-        {
-            SaveManager.MarkCharacterAsCollected(characterId);
         }
     }
 }
