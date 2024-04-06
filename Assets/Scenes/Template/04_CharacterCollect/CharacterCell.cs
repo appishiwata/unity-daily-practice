@@ -18,11 +18,11 @@ namespace Scenes.Template._04_CharacterCollect
             _buttonCollect.OnClickAsObservable()
                 .Subscribe(_ =>
                 {
-                    SaveManager.MarkCharacterAsCollected(_character.id);
+                    SaveManager.Instance.MarkCharacterAsCollected(_character.id);
                     _buttonCollect.interactable = false;
                 }).AddTo(this);
             
-            if (SaveManager.IsCharacterCollected(_character.id))
+            if (SaveManager.Instance.IsCharacterCollected(_character.id))
             {
                 _buttonCollect.interactable = false;
             }
